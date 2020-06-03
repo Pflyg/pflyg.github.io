@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@svgdotjs/svg.js@latest/dist/svg.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.53.0/lib/codemirror.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.53.0/mode/javascript/javascript.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.53.0/addon/edit/closebrackets.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.53.0/addon/edit/matchbrackets.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.53.0/addon/fold/foldcode.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.53.0/addon/fold/foldgutter.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.53.0/addon/fold/brace-fold.js"></script>
+  <script src="https://unpkg.com/jshint@2.9.6/dist/jshint.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.54.0/addon/lint/javascript-lint.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.54.0/addon/lint/lint.js"></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/tweakpane@1.3.3/dist/tweakpane.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.53.0/lib/codemirror.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.53.0/addon/fold/foldgutter.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.53.0/theme/ayu-mirage.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.54.0/addon/lint/lint.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <script src="lib/matrix.js"></script>
+  <!--<script src="lib/greiner-hormann.js"></script>-->
+  <script src="lib/polybool.js"></script>
+
+  <!--<script src="svgp.js"></script>-->
+  <script src="js/index.js" defer type="module"></script>
+  <title>Penplotter.js</title>
+</head>
+<body>
+  <div id="layout">
+    <div id="svg"></div>
+    <div id="code-area">
+      <textarea id="code" spellcheck="false">Run Code here</textarea>
+      <div class="buttons">
+        <button id="execute">Execute</button>
+        <button id="save">Save</button>
+      </div>
+      <div class="saved-area">
+        <b>Load saved:</b>
+        <select id="save-select">
+          <option>Test1</option>
+          <option>Test2</option>
+          <option>Test3</option>
+        </select>
+      </div>
+      <div id="options"></div>
+    </div>
+    <div class="bottom-left">
+      <div id="output-area">
+        <button id="dl">Download GCode</button>
+        <button id="dl-svg">Download SVG</button>
+        <textarea id="gcode-output" placeholder="GCode Output will go here"></textarea>
+      </div>
+      <p><a href="./doc/" target="_blank"><button>Open Help / Reference</button></a></p>
+    </div>
+  </div>
+</body>
+</html>

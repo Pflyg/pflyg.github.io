@@ -1,0 +1,147 @@
+:root {
+  font-family: 'Inter', sans-serif;
+  --prim-col: #32afa9;
+  --sec-col: #ff8364;
+}
+button, select {
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: semibold;
+}
+#svg svg{
+  max-width: 600px;
+  height: auto;
+}
+button, select{
+  border: none;
+  background: var(--prim-col);
+  color: white;
+  outline: none;
+  padding: 0.5em 1em;
+  transition: box-shadow 0.1s ease;
+}
+button:hover, button:focus, select:hover{
+  box-shadow: inset 0 0 0 2px var(--prim-col), inset 0 0 0 4px white
+  /*box-shadow: inset 0 0 5px 0px rgba(0,0,0,0.7);*/
+}
+button:active {
+  box-shadow: inset 0 0 0 2px var(--prim-col), inset 0 0 0 6px white;
+}
+.CodeMirror {
+  flex: 1;
+  padding: 1em;
+  padding-left: 0.6em;
+  max-height: 100vh;
+  height: 600px !important;
+  /*background-color: #004;
+  color: #BB6;*/
+}
+.CodeMirror-error {
+  width: 7px;
+}
+.CodeMirror-error-el {
+  display: flex;
+  align-items: center;
+  height: 16px;
+}
+.CodeMirror-error-el::before {
+  content: '';
+  background: #cc0000;
+  width: 7px;
+  height: 7px;
+  border-radius: 4px;
+}
+.buttons button, .saved-area select{
+  padding: 1em;
+  flex: 1;
+}
+.buttons button:not(:last-child) {
+  margin-right: 8px;
+}
+/*LAYOUT */
+#gcode-output {
+  display: block;
+  width: 100%;
+  height: 10em;
+  background: #ddd;
+  border: none;
+  padding: 0.5em;
+  resize: vertical;
+}
+#output-area {
+  position: relative;
+}
+#output-area button{
+  position: absolute;
+  top: 0.5em;
+  right: 1.7em;
+}
+#output-area #dl-svg {
+  top: 3.2em;
+}
+#layout {
+  display: grid;
+  grid-gap: 8px;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: min-content 1fr;
+}
+#code-area {
+  display: flex;
+  flex-direction: column;
+  grid-column: 2;
+  grid-row: 1/ span 2;
+}
+#options {
+  margin-top: 1em;
+}
+#options .tp-lblv_v {
+  
+  width: 200px;
+}
+.buttons, .saved-area{
+  margin-top: 0.5em;
+  display: flex;
+}
+.saved-area {
+  flex-direction: column;
+  margin-top: 1em;
+}
+*, *::before, *::after{
+  box-sizing: border-box;
+}
+
+:root {
+  /* Base colors */
+  --tp-base-background-color: hsl(230deg, 5%, 90%);
+  --tp-base-shadow-color: hsla(0, 0%, 0%, 0.1);
+  
+  /* Button-like control colors */
+  --tp-button-background-color: hsl(230deg, 5%, 70%);
+  --tp-button-background-color-active: hsl(230deg, 5%, 55%);
+  --tp-button-background-color-focus: hsl(230deg, 5%, 60%);
+  --tp-button-background-color-hover: hsl(230deg, 5%, 65%);
+  --tp-button-foreground-color: hsl(230deg, 5%, 20%);
+  
+  /* Folder colors */
+  --tp-folder-background-color: hsl(230deg, 5%, 80%);
+  --tp-folder-background-color-active: hsl(230deg, 5%, 65%);
+  --tp-folder-background-color-focus: hsl(230deg, 5%, 70%);
+  --tp-folder-background-color-hover: hsl(230deg, 5%, 75%);
+  --tp-folder-foreground-color: var(--tp-input-foreground-color);
+  
+  /* Input control colors */
+  --tp-input-background-color: hsl(230deg, 5%, 85%);
+  --tp-input-background-color-active: hsl(230deg, 5%, 70%);
+  --tp-input-background-color-focus: hsl(230deg, 5%, 75%);
+  --tp-input-background-color-hover: hsl(230deg, 5%, 80%);
+  --tp-input-foreground-color: hsl(230deg, 5%, 30%);
+  --tp-input-guide-color: hsla(230deg, 5%, 30%, 10%);
+  
+  /* Monitor control colors */
+  --tp-monitor-background-color: var(--tp-input-background-color);
+  --tp-monitor-foreground-color: hsl(230deg, 5%, 60%);
+  
+  /* Misc */
+  --tp-label-foreground-color: hsl(230deg, 5%, 50%);
+  --tp-separator-color: hsl(230deg, 5%, 85%);
+}
