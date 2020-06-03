@@ -21,6 +21,47 @@ var border = 50;
 
 function init(){
   code = localStorage.getItem("code");
+  if(!code) code = `setDefaults();
+
+  function makeETriangle(size = 100){
+    var dy = Math.sin(Math.PI / 6) * size;
+    var dx = Math.cos(Math.PI / 6) * size;
+    translate(0, dy / 2);
+    var p1 = P(0, -size);
+    var p2 = P(-dx, dy);
+    var p3 = P(dx, dy);
+    polygon([p1, p2, p3]);
+    recCentroid(p1, p2, p3, 4);
+  }
+  
+  function recCentroid(p1, p2, p3, max = 5, n = 0){
+    if(n >= max)return;
+    n++;
+    var p = findCentroid(p1, p2, p3);
+    var mp12 = midPoint(p1, p2);
+    var mp23 = midPoint(p2, p3);
+    var mp13 = midPoint(p1, p3);
+    line(mp23, p1);
+    line(p2, mp13);
+    line(p3, mp12);
+    
+    recCentroid(p1, mp13, p, max, n);
+    recCentroid(p3, mp13, p, max, n);
+    
+    recCentroid(p3, mp23, p, max, n);
+    recCentroid(p2, mp23, p, max, n);
+    
+    recCentroid(p2, mp12, p, max, n);
+    recCentroid(p1, mp12, p, max, n);
+  }
+  
+  function findCentroid(p1, p2, p3) {
+    return p1.clone().add(p2).add(p3).mult(1 / 3);
+  }
+  function midPoint(p1, p2){
+    return p1.clone().add(p2).mult(1 / 2);
+  }
+  makeETriangle(250);`;
   refs.codeTA.textContent = code;
 
   cmInstance = initCodeMirror();
@@ -38,7 +79,7 @@ init();
 function updateSelect() {
   var saved = localStorage.getItem("saved");
   if(saved)saved=JSON.parse(saved);
-  else return;
+  else saved = {};
   var options = '<option value="%DEF%">Default</option>';
   for(let key in saved){
     options += "<option value=\"" + key +  "\">" + key + "</option>";
