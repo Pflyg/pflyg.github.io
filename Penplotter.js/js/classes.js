@@ -88,6 +88,7 @@ class Line {
     var diff = this.p2.clone().sub(this.p1);
     return diff.x ** 2 + diff.y ** 2;
   }
+
   //Incomplete!
   clip(poly, returnSinglePoint = false){
     var points = [];
@@ -159,14 +160,15 @@ class Polygon {
     //console.log(count);
     return (count % 2) === 1;
   }
+
   containsPoint(p){
     var count = 0;
     var points = {};
     var isIn = false;
     this.forEachLine((p1, p2) => {
       if(isIn)return;
-      //Hacky solution using real numbers
-      var rc = rayCast(p, p.clone().add(2.1, 0.4), p1, p2);
+      //Hacky solution using real numbers, it avoids any sort of line collinearity (this would be a very extreme edge case)
+      var rc = rayCast(p, p.clone().add(Math.PI, Math.SQRT1_2), p1, p2);
       if(rc.lambda == 0)isIn = true;
       if(rc.point){
         let key = rc.point.x + "|" + rc.point.y;
