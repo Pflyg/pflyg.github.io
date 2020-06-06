@@ -252,6 +252,23 @@ function SVGLib(ref) {
     if(args.p1.isEqual(args.p2))return;
     var p1 = ref.reverseTF(new Point(0, 0));
     var p2 = ref.reverseTF(new Point(dimensions[0], dimensions[1]));
+    //Clip line by bounding box
+    var pol = new Polygon([[p1.x, p1.y], [p2.x, p1.y], [p2.x, p2.y], [p1.x, p2.y]]);
+
+    var clip = pol.clipLine(args.p1, args.p2);
+    for(let lin of clip){
+      var p1 = ref.applyTF(lin.p1);
+      var p2 = ref.applyTF(lin.p2);
+      if(args.addToGcode)GC.line(p1, p2);
+      var line = draw.path(`M${p1.x} ${p1.y} L${p2.x} ${p2.y}`);
+      applyStyling(line);
+    }
+  }
+  ref.lineOLD = function () {
+    var args = normaliseArguments(arguments, {p1: {type: "point"}, p2: {type: "point"}, addToGcode: {type: "bool", default: true}});
+    if(args.p1.isEqual(args.p2))return;
+    var p1 = ref.reverseTF(new Point(0, 0));
+    var p2 = ref.reverseTF(new Point(dimensions[0], dimensions[1]));
     //Keep line in bounding box
     var poly = new Polygon([[p1.x, p1.y], [p2.x, p1.y], [p2.x, p2.y], [p1.x, p2.y]]);
 

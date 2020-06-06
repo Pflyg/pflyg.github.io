@@ -1,4 +1,4 @@
-
+import {rayCast, intersectLine} from './utils.js';
 //import Flatten from "https://unpkg.com/@flatten-js/core@1.2.8/dist/main.esm.js";
 
 //var BooleanOperations = Flatten.BooleanOperations;
@@ -10,13 +10,23 @@ class Point {
     this.y = y;
   }
   add(point){
-    this.x += point.x;
-    this.y += point.y;
+    if(arguments.length == 2){
+      this.x += arguments[0];
+      this.y += arguments[1];
+    }else{
+      this.x += point.x;
+      this.y += point.y;
+    }
     return this;
   }
   sub(point){
-    this.x -= point.x;
-    this.y -= point.y;
+    if(arguments.length == 2){
+      this.x -= arguments[0];
+      this.y -= arguments[1];
+    }else{
+      this.x -= point.x;
+      this.y -= point.y;
+    }
     return this;
   }
   toArray() {
@@ -140,6 +150,60 @@ class Polygon {
   hatch(density = 4, angle = 0){
     ref.hatchPolygon(this, density, angle);
   }
+  containsPoint2(p){
+    var count = 0;
+    this.forEachLine((p1, p2) => {
+      //Hacky solution using real numbers
+      if(rayCast(p, p.clone().add(2.1, 0.4), p1, p2).point)count++;
+    });
+    //console.log(count);
+    return (count % 2) === 1;
+  }
+  containsPoint(p){
+    var count = 0;
+    var points = {};
+    var isIn = false;
+    this.forEachLine((p1, p2) => {
+      if(isIn)return;
+      //Hacky solution using real numbers
+      var rc = rayCast(p, p.clone().add(2.1, 0.4), p1, p2);
+      if(rc.lambda == 0)isIn = true;
+      if(rc.point){
+        let key = rc.point.x + "|" + rc.point.y;
+        if(points[key])return;
+        count++;
+        points[key] = true;
+      }
+    });
+    if(isIn)return true;
+    return (count % 2) === 1;
+  }
+  clipLine (from, to){
+    //This is horribly inefficient
+    var points = [];
+    var lastPoint = new Point(NaN, NaN);
+    this.forEachLine((p1, p2) => {
+      //Don't count points on the edge
+      var rc = intersectLine(from, to, p1, p2);
+      if(rc.lambda == 0)return;
+      if(rc.point){
+        if(lastPoint.isEqual(rc.point)){
+          points.pop();
+          return;
+        }
+        lastPoint = rc.point;
+        points.push(rc.point);
+      }
+    });
+    if(this.containsPoint(from))points.unshift(from);
+    if(this.containsPoint(to))points.push(to);
+    var lines = [];
+    for(let i = 0; i < (points.length - 1); i += 2){
+      lines.push(new Line(points[0], points[1]));
+    }
+    return lines;
+  }
+
   /*
   union(poly2){
     var res = (greinerHormann.union(this.points, poly2.points));
@@ -172,7 +236,7 @@ class Polygon {
     return new Polygon(this.points.map(p => p.clone()));
   }
   offset(off = 1) {
-    //TODO
+    //Not implement yet because I hardly know anything about this
     var poly = this.clone();
     var center = P(0, 0);
     for(let p of this.points){
@@ -188,16 +252,6 @@ class Polygon {
       p.x = tf.x;
       p.y = tf.y;
     }
-    /*for(let i = 0; i < poly.points.length; i++){
-      var p0 = this.points[(this.points.length + i - 1) % this.points.length];
-      var p1 = this.points[i];
-      var p2 = this.points[(i + 1) % this.points.length];
-      var vec12 = p2.clone().sub(p1).normalise();
-      var vec10 = p0.clone().sub(p1).normalise();
-      var vec = vec12.add(vec10);
-      vec.normalise().mult(off); //Set length to offset
-      poly.points[i] = poly.points[i].add(vec);
-    }*/
     return poly;
   }
 }
