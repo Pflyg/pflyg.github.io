@@ -150,14 +150,8 @@ function SVGLib(ref) {
     obj.stroke(styling.stroke.nostroke ? 'none' : {width: styling.stroke.weight, color: styling.stroke.col});
     obj.fill(styling.fill.nofill ? 'none' : { color: styling.fill.col});
   }
-  function isPointInBox(p){
-    return !(p.x <= 0 || p.y <= 0 || p.x >= dimensions[0] || p.y >= dimensions[1]);
-  }
-  function clipPolygon(poly) {
-    var p1 = ref.reverseTF(new Point(0, 0));
-    var p2 = ref.reverseTF(new Point(dimensions[0], dimensions[1]));
-    //Keep polygon in bounding box
-    var pol = new Polygon([[p1.x, p1.y], [p2.x, p1.y], [p2.x, p2.y], [p1.x, p2.y]]);
+  function newClipPoly(poly) {
+    var pol = new Polygon([[0, 0], [0, dimensions[1]], dimensions, [dimensions[0], 0]]);
     pol = pol.intersect(poly);
     return pol;
   }
@@ -165,6 +159,7 @@ function SVGLib(ref) {
   ref.createCanvas = function(w, h) {
     if(draw)draw.remove();
     dimensions = [w, h];
+    ref.resetMatrix();
     draw = SVG().addTo('#svg').size(w, h).attr("id", elId)
     .attr("preserveAspectRatio", "none")
     .attr("viewBox", `0 0 ${w} ${h}`);
@@ -248,50 +243,40 @@ function SVGLib(ref) {
     return styling.stroke.col;
   }
   ref.line = function () {
-    var args = normaliseArguments(arguments, {p1: {type: "point"}, p2: {type: "point"}, addToGcode: {type: "bool", default: true}});
+    var args = normaliseArguments(arguments, {p1: {type: "point"}, p2: {type: "point"}, addToGcode: {type: "bool", default: true}, clip: {type: "bool", default: true}});
     if(args.p1.isEqual(args.p2))return;
-    var p1 = ref.reverseTF(new Point(0, 0));
-    var p2 = ref.reverseTF(new Point(dimensions[0], dimensions[1]));
-    //Clip line by bounding box
-    var pol = new Polygon([[p1.x, p1.y], [p2.x, p1.y], [p2.x, p2.y], [p1.x, p2.y]]);
+    if(args.clip){
+      /*var p1 = ref.reverseTF(new Point(0, 0));
+      var p2 = ref.reverseTF(new Point(dimensions[0], dimensions[1]));
+      //Clip line by bounding box
+      var pol2 = new Polygon([[p1.x, p1.y], [p2.x, p1.y], [p2.x, p2.y], [p1.x, p2.y]]);
+      pol2.draw();*/
+  
+      var pol = new Polygon([[0, 0], [0, dimensions[1]], dimensions, [dimensions[0], 0]]);
 
-    var clip = pol.clipLine(args.p1, args.p2);
-    for(let lin of clip){
-      var p1 = ref.applyTF(lin.p1);
-      var p2 = ref.applyTF(lin.p2);
+      var clip = pol.clipLine(ref.applyTF(args.p1), ref.applyTF(args.p2));
+      for(let lin of clip){
+        var p1 = lin.p1;
+        var p2 = lin.p2;
+        if(args.addToGcode)GC.line(p1, p2);
+        var line = draw.path(`M${p1.x} ${p1.y} L${p2.x} ${p2.y}`);
+        applyStyling(line);
+      }
+      /*var clip = pol.clipLine(args.p1, args.p2);
+      for(let lin of clip){
+        var p1 = ref.applyTF(lin.p1);
+        var p2 = ref.applyTF(lin.p2);
+        if(args.addToGcode)GC.line(p1, p2);
+        var line = draw.path(`M${p1.x} ${p1.y} L${p2.x} ${p2.y}`);
+        applyStyling(line);
+      }*/
+    }else{
+      var p1 = ref.applyTF(args.p1);
+      var p2 = ref.applyTF(args.p2);
       if(args.addToGcode)GC.line(p1, p2);
       var line = draw.path(`M${p1.x} ${p1.y} L${p2.x} ${p2.y}`);
       applyStyling(line);
     }
-  }
-  ref.lineOLD = function () {
-    var args = normaliseArguments(arguments, {p1: {type: "point"}, p2: {type: "point"}, addToGcode: {type: "bool", default: true}});
-    if(args.p1.isEqual(args.p2))return;
-    var p1 = ref.reverseTF(new Point(0, 0));
-    var p2 = ref.reverseTF(new Point(dimensions[0], dimensions[1]));
-    //Keep line in bounding box
-    var poly = new Polygon([[p1.x, p1.y], [p2.x, p1.y], [p2.x, p2.y], [p1.x, p2.y]]);
-
-    var inter = new Line(args.p1, args.p2).clip(poly, true);
-    if(inter.x){
-      p1 = ref.applyTF(args.p1);
-      p2 = ref.applyTF(args.p2);
-      if(!isPointInBox(p1)){
-        p1 = applyTF(inter);
-      }else if(!isPointInBox(p2)){
-        p2 = applyTF(inter);
-      }
-    }else if(inter.length > 0){
-      p1 = ref.applyTF(inter[0].p1);
-      p2 = ref.applyTF(inter[0].p2);
-    }else{
-      p1 = ref.applyTF(args.p1);
-      p2 = ref.applyTF(args.p2);
-      if(!(isPointInBox(p1) || isPointInBox(p2)))return;
-    }
-    if(args.addToGcode)GC.line(p1, p2);
-    var line = draw.path(`M${p1.x} ${p1.y} L${p2.x} ${p2.y}`);
-    applyStyling(line);
   }
   ref.rect = function(){
     var args = normaliseArguments(arguments, {p1: {type: "point"}, p2: {type: "point"}});
@@ -305,9 +290,10 @@ function SVGLib(ref) {
   ref.polygon = function () {
     var args = normaliseArguments(arguments, {poly: {type: "polygon"}});
     //Keep polygon in bounding box
-    var poly = clipPolygon(args.poly);
+    var poly = newClipPoly(new Polygon(args.poly.points.map(p => ref.applyTF(p))));
+    
     if(!poly)return;
-    var points = poly.points.map(p => ref.applyTF(p));
+    var points = poly.points;//.map(p => ref.applyTF(p));
     GC.polygon(points);
     var poly = draw.polygon(points.map(p => p.toArray()));
     applyStyling(poly);
@@ -323,10 +309,10 @@ function SVGLib(ref) {
     var rotMat = new Matrix();
     var mat = ref.getMatrix();
     //Hacky magic: Copy rotation from global tf matrix
-    rotMat.a = -mat.a;
+    /*rotMat.a = -mat.a;
     rotMat.b = mat.b;
     rotMat.c = -mat.c;
-    rotMat.d = mat.d;
+    rotMat.d = mat.d;*/
     //rotate coordinate system
     rotMat.rotateDeg(-args.angle);
     var invRotMat = rotMat.inverse();
@@ -338,6 +324,7 @@ function SVGLib(ref) {
     //Draw lines over the screen
     for(let i = -dimensions[0] / 2; i < (dimensions[0] * 2 / args.density); i++){
       //Clip line by polygon
+      //line(currentLine.p1, currentLine.p2, true, false);
       var inter = currentLine.clip(poly);
       if(inter.length == 0 && hasIntersected == true){
         break;
