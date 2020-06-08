@@ -393,6 +393,10 @@ function SVGLibMatrix(ref) {
     var p = mat.applyToPoint(args.p.x, args.p.y)
     return new Point(p.x, p.y);
   }
+  ref.scale = function(scaleX, scaleY) {
+    scaleY = scaleY || scaleX;
+    mat.scale(scaleX, scaleY);
+  }
   ref.rotate = function (deg) {
     mat.rotateDeg(deg);
   }
