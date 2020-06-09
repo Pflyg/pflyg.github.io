@@ -30,6 +30,8 @@ Most of the methods listed here are chainable
    - Divides the current Point by it's length (vector normalisation)
  - `len ()`
    - Returns the distance to the origin
+ - `len ()`
+   - Returns the distance to the origin squared
  - `dist (Point b)`
    - Returns the distance to Point `b`
  - `dist2 (Point b)`
@@ -55,6 +57,10 @@ Most of the methods listed here are chainable
    - Returns a new Polygon which is the union of the current Polygon and Polygon `b`
  - `intersect (Polygon b)`
    - Returns a new Polygon which is the intersection of the current Polygon and Polygon `b`
+ - `containsPoint (Point p)`
+   - Tests and returns whether Point p is contained in the polygon. Points lying on the edges are thought of as being in the polygon
+ - `clipLine (Point from, Point to)`
+   - Returns an array of Line objects clipped by the polygon
  - `diff (Polygon b)`
    - Returns a new Polygon which is the current Polygon minus Polygon `b`
  - `forEachLine (Function func)`
@@ -117,6 +123,8 @@ Similarly, if a function takes a polygon as an argument, you can either pass in 
    - Rotates the canvas by `angle` (for all future calls of line, circle, etc.)
  - `translate (x, y)`
    - Translates the canvas by `x` and `y` (for all future calls of line, circle, etc.)
+ - `scale (scaleX, scaleY)`
+   - Scales the canvas by `scaleX` in x direction and `scaleY` in y direction
  - `reverseTF(Point p)`
    - Reverses the transformation so that [0, 0] would always be the top left corner. Mostly used internally. Can only take a Point object as an argument (as opposed to array / argument form);
  - `toSVG ()`
@@ -128,7 +136,11 @@ There is also the following set of functions which exist as helper functions on 
  - `sin / cos / tan (angle [degrees])`
    - Returns the sine / cosine / tangens of `angle` in degrees
  - `random ()`
-   - WIP
+   - Returns a random number between 0 and 1
+ - `random (max)`
+   - Returns a random integer between 0 (inclusively) and max (exclusively)
+ - `random (min, max)`
+   - Returns a random integer between min (inclusively) and max (exclusively)
 
 ### Utils
 Some functions are kept under this namespace. They are mostly smaller functions. There is also the alias `U` instead of `Utils`.

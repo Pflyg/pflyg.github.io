@@ -4,6 +4,7 @@ import {rayCast, intersectLine} from './utils.js';
 //var BooleanOperations = Flatten.BooleanOperations;
 var ref = window;
 
+
 class Point {
   constructor(x, y){
     this.x = x;
@@ -52,6 +53,9 @@ class Point {
   len() {
     return this.dist(new Point(0, 0));
   }
+  len2() {
+    return this.dist2(new Point(0, 0));
+  }
   dist(point){
     return Math.sqrt(this.dist2(point));
   }
@@ -65,6 +69,7 @@ class Point {
     return new Point(this.x, this.y);
   }
 }
+
 Point.fromAngle = function(angle, length){
   angle = angle * Math.PI / 180;
   return new Point(Math.cos(angle) * length, Math.sin(angle) * length);
@@ -206,27 +211,6 @@ class Polygon {
     return lines;
   }
 
-  /*
-  union(poly2){
-    var res = (greinerHormann.union(this.points, poly2.points));
-    return new Polygon(res[0].map(p => new Point(p.x, p.y)));
-  }
-  diff(poly2) {
-    var res = (greinerHormann.diff(this.points, poly2.points));
-    return new Polygon(res[0].map(p => new Point(p.x, p.y)));
-  }
-  intersection(poly2) {
-    var inter = BooleanOperations.intersect(this.toFlatten(), poly2.toFlatten());
-    //var points = inter.vertices.map(p => new Point(p.x, p.y));
-    var firstFace = inter.faces.values().next().value
-    var points = firstFace.edges.map(p => new Point(p.start.x, p.start.y));
-    
-    return new Polygon(points);
-    /*var res = (greinerHormann.intersection(this.points, poly2.points));
-    //console.log(res);
-    if(!res)return false;
-    return new Polygon(res[0].map(p => new Point(p.x, p.y)));
-  }*/
   forEachLine(func) {
     for(let i = 0; i < this.points.length; i++){
       var p1 = this.points[i];

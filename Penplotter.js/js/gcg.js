@@ -408,6 +408,13 @@ function commonFunctions(ref) {
   ref.sin = (deg) => Math.sin(deg * Math.PI / 180);
   ref.cos = (deg) => Math.cos(deg * Math.PI / 180);
   ref.tan = (deg) => Math.tan(deg * Math.PI / 180);
+  ref.random = function() {
+    if(arguments.length == 0)
+      return Math.random();
+    if(arguments.length == 1)
+      return Math.floor(Math.random() * from);
+    return Math.floor(Math.random() * (to - from) + from);
+  }
 }
 SVGLib(ref);
 
