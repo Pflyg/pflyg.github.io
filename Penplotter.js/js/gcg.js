@@ -292,7 +292,7 @@ function commonFunctions(ref) {
   ref.sin = (deg) => Math.sin(deg * Math.PI / 180);
   ref.cos = (deg) => Math.cos(deg * Math.PI / 180);
   ref.tan = (deg) => Math.tan(deg * Math.PI / 180);
-  ref.random = function() {
+  ref.random = function(from, to) {
     if(arguments.length == 0)
       return Math.random();
     if(arguments.length == 1)
@@ -301,7 +301,7 @@ function commonFunctions(ref) {
   }
 }
 SVGLib(ref);
-
+commonFunctions(ref);
 
 function normaliseArguments(args, pattern){
   var ret = {};
