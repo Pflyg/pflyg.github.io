@@ -1,5 +1,6 @@
 import "./gcg.js";
 import { Point } from "./classes.js";
+import ExampleCode from "./examples.js";
 
 var refs = {
   outputTA: document.getElementById("gcode-output"),
@@ -64,6 +65,14 @@ function init(){
   makeETriangle(250);`;
   refs.codeTA.textContent = code;
 
+  var saved = localStorage.getItem("saved");
+  if(!saved)localStorage.setItem("saved", JSON.stringify(ExampleCode));
+  else localStorage.setItem("saved", 
+    JSON.stringify(
+        Object.assign(ExampleCode, JSON.parse(saved))
+      )
+  );
+
   cmInstance = initCodeMirror();
   paneInstance = initOptions();
   cmInstance.setOption("extraKeys", {
@@ -79,8 +88,8 @@ init();
 
 function updateSelect() {
   var saved = localStorage.getItem("saved");
-  if(saved)saved=JSON.parse(saved);
-  else saved = {};
+  saved = saved ? JSON.parse(saved) : {};
+
   var options = '<option value="%DEF%">Default</option>';
   for(let key in saved){
     options += "<option value=\"" + key +  "\">" + key + "</option>";
