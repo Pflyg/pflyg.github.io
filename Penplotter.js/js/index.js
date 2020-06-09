@@ -72,6 +72,7 @@ function init(){
   updateSelect();
   initEvents();
   setDefaults();
+  done();
   //makeCode();
 }
 init();
@@ -176,6 +177,7 @@ function makeCode() {
     }
     throw e;
   }
+  done();
   finishGCode();
   var gcode = getGCode();
   refs.outputTA.textContent = gcode;
