@@ -298,7 +298,7 @@ function commonFunctions(ref) {
   ref.sin = (deg) => Math.sin(deg * Math.PI / 180);
   ref.cos = (deg) => Math.cos(deg * Math.PI / 180);
   ref.tan = (deg) => Math.tan(deg * Math.PI / 180);
-  ref.midpoint = () => {
+  ref.midpoint = function () { //Don't use arrow function, arguments dont work
     var args = normaliseArguments(arguments, {p1: {type: "point"}, p2: {type: "point"}});
     return args.p1.clone().add(args.p2.clone().sub(args.p1).mult(1/2));
   }
