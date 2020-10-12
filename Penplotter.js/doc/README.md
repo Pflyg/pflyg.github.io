@@ -141,6 +141,8 @@ There is also the following set of functions which exist as helper functions on 
    - Returns a random integer between 0 (inclusively) and max (exclusively)
  - `random (min, max)`
    - Returns a random integer between min (inclusively) and max (exclusively)
+ - `midpoint (Point p1, Point p2)`
+   - Returns the midpoint between p1 and p2
 
 ### Utils
 Some functions are kept under this namespace. They are mostly smaller functions. There is also the alias `U` instead of `Utils`.
