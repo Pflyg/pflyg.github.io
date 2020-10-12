@@ -55,8 +55,10 @@ Most of the methods listed here are chainable
    - Hatches the polygon with lines (current settings) with distance `density` to each other and `angle`
  - `union (Polygon b)`
    - Returns a new Polygon which is the union of the current Polygon and Polygon `b`
+ - `diff (Polygon b)`
+   - Returns a new Polygon which contains the current Polygon minus Polygon `b` (Returns an array of polygons if the results has multiple unconnected regions)
  - `intersect (Polygon b)`
-   - Returns a new Polygon which is the intersection of the current Polygon and Polygon `b`
+   - Returns a new Polygon which is the intersection of the current Polygon and Polygon `b` (Returns an array of polygons if the results has multiple unconnected regions)
  - `containsPoint (Point p)`
    - Tests and returns whether Point p is contained in the polygon. Points lying on the edges are thought of as being in the polygon
  - `clipLine (Point from, Point to)`
@@ -141,7 +143,7 @@ There is also the following set of functions which exist as helper functions on 
    - Returns a random integer between 0 (inclusively) and max (exclusively)
  - `random (min, max)`
    - Returns a random integer between min (inclusively) and max (exclusively)
- - `midpoint (Point p1, Point p2)`
+ - `midpoint (Point p1, Point p2)` (alias `mp`)
    - Returns the midpoint between p1 and p2
 
 ### Utils

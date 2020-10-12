@@ -302,6 +302,7 @@ function commonFunctions(ref) {
     var args = normaliseArguments(arguments, {p1: {type: "point"}, p2: {type: "point"}});
     return args.p1.clone().add(args.p2.clone().sub(args.p1).mult(1/2));
   }
+  ref.mp = ref.midpoint;
   ref.random = function(from, to) {
     if(arguments.length == 0)
       return Math.random();
