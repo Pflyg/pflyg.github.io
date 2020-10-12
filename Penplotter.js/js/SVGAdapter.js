@@ -16,7 +16,10 @@ export default class SVGAdapter {
   clear() {
     this.draw.clear();
   }
-
+  dot(p, r = 3, col = "black") {
+    var circ = this.draw.circle(2*r).move(p.x - r, p.y - r);
+    circ.fill({color: col});
+  }
   setBackground(col) {
     this.draw.attr("style", "background-color: " + col);
   }

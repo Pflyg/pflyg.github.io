@@ -170,6 +170,12 @@ function SVGLib(ref) {
       new Point(args.p1.x, args.p2.y),
     ]);
   }
+  ref.dot = function() {
+    var args = normaliseArguments(arguments, {p1: {type: "point"}, r: {type: "number"}});
+    var point = ref.applyTF(args.p1);
+    adapter.dot(point, args.r, styling.stroke.col);
+    GC.dot(point);
+  }
   ref.polygon = function () {
     var args = normaliseArguments(arguments, {poly: {type: "polygon"}});
     //Keep polygon in bounding box
@@ -292,6 +298,10 @@ function commonFunctions(ref) {
   ref.sin = (deg) => Math.sin(deg * Math.PI / 180);
   ref.cos = (deg) => Math.cos(deg * Math.PI / 180);
   ref.tan = (deg) => Math.tan(deg * Math.PI / 180);
+  ref.midpoint = () => {
+    var args = normaliseArguments(arguments, {p1: {type: "point"}, p2: {type: "point"});
+    return args.p1.clone().add(args.p2.clone().sub(args.p1).mult(1/2));
+  }
   ref.random = function(from, to) {
     if(arguments.length == 0)
       return Math.random();

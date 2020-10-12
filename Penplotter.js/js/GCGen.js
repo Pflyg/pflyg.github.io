@@ -53,6 +53,11 @@ export default class GCGen {
     this.liftPen();
     this.move(pos);
   }
+  dot(pos) {
+    this.getToPosition(pos);
+    this.lowerPen();
+    this.liftPen();
+  }
   line(p1, p2){
     this.getToPosition(p1);
     
