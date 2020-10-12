@@ -299,7 +299,7 @@ function commonFunctions(ref) {
   ref.cos = (deg) => Math.cos(deg * Math.PI / 180);
   ref.tan = (deg) => Math.tan(deg * Math.PI / 180);
   ref.midpoint = () => {
-    var args = normaliseArguments(arguments, {p1: {type: "point"}, p2: {type: "point"});
+    var args = normaliseArguments(arguments, {p1: {type: "point"}, p2: {type: "point"}});
     return args.p1.clone().add(args.p2.clone().sub(args.p1).mult(1/2));
   }
   ref.random = function(from, to) {
