@@ -247,7 +247,7 @@ Polygon.prototype.intersect = function(poly2) {
     {regions: [this.toPointArray()], inverted: false},
     {regions: [poly2.toPointArray()], inverted: false}
     );
-  if(poly.regions && poly.regions.length > 2)return poly.regions.map(r => new Polygon(r));
+  if(poly.regions && poly.regions.length >= 2)return poly.regions.map(r => new Polygon(r));
   return poly.regions && poly.regions.length > 0 ? new Polygon(poly.regions[0]) : false;
 }
 
@@ -256,7 +256,7 @@ Polygon.prototype.diff = function(poly2) {
     {regions: [this.toPointArray()], inverted: false},
     {regions: [poly2.toPointArray()], inverted: false}
     );
-  if(poly.regions && poly.regions.length > 2)return poly.regions.map(r => new Polygon(r));
+  if(poly.regions && poly.regions.length >= 2)return poly.regions.map(r => new Polygon(r));
   return poly.regions && poly.regions.length > 0 ? new Polygon(poly.regions[0]) : false;
 }
 Polygon.prototype.union = function(poly2) {
