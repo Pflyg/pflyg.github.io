@@ -110,8 +110,8 @@
           ret += this.unparseInstr(pair[1], indent + "  ");
           return indent + ret + "\n<b>od</b>";
         }else if(unp[0] == 4n){
-          var ret = indent + this.unparseInstr(pair[0], indent) + "\n";
-          ret += indent + this.unparseInstr(pair[1], indent);
+          var ret = this.unparseInstr(pair[0], indent) + "\n";
+          ret += this.unparseInstr(pair[1], indent);
           return ret;
         }
       }
