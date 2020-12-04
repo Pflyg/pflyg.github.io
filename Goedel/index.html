@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/nearley@2.19.9/lib/nearley.js"></script>
+  <script src="./goedel.js"></script>
+  <title>Document</title>
+  <style>textarea {width: 100%; min-height: 200px;font-family: monospace; font-size: 1em; resize: vertical;}
+  html {font-family: sans-serif}
+  html, body, #wrapper {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  h3 {
+    margin: 0;
+    margin-bottom: 0.5em;
+  }
+  #wrapper {
+    padding: 1em;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: min-content 1fr min-content;
+    gap: 1em;
+    grid-template-areas:
+    "P G"
+    "OP OG"
+    "EXPL EXPL";
+}
+    pre.out, textarea{
+      background: #004;
+      padding: 1rem;
+      color: white;
+      white-space: pre-wrap;
+      display: block;
+      overflow-wrap: anywhere;
+      border-radius: 4px;
+      box-shadow: 0 20px 20px -5px rgb(0 0 0 / 34%);
+    }
+    pre {
+      margin: 0;
+      display: inline-block;
+    }
+
+.P { grid-area: P; }
+.G { grid-area: G; }
+.OP { grid-area: OP; }
+.OG { grid-area: OG; }
+.EXPL { grid-area: EXPL; }
+  * {box-sizing: border-box;}
+  </style>
+</head>
+<body>
+  <div id="wrapper">
+    <div class="P">
+      <h3>WHILE-Programm (Input)</h3>
+      <textarea id ="in"></textarea>
+    </div>
+    <div class="OP">
+      <h3>Gödelnummer (Output)</h3>
+      <pre id="out" class="out"></pre>
+    </div>
+    <div class="G">
+      <h3>Gödelnummer (Input)</h3>
+      <textarea id ="unp"></textarea>
+    </div>
+    <div class="OG">
+      <h3>WHILE-Programm (Output)</h3>
+      <pre id="unpout" class="out"></pre>
+    </div>
+    <div class="EXPL">
+      While-Programme unterstützen folgende Instruktionen: <pre>VAR1 := VAR2 + VAR3</pre>, <pre>VAR1 := VAR2 + CONST</pre>, <pre>VAR1 := VAR2 - VAR3</pre>, <pre>VAR1 := VAR2 - CONST</pre>, <pre>VAR1 := CONST</pre>, <pre>VAR1 := VAR2</pre>, <pre>while VAR do P od</pre>, <pre>P1 P2</pre>, <pre>if VAR1 then P1 else P2 fi</pre>,
+    </div>
+  </div>
+  <script>
+    var din = document.getElementById("in");
+    var dout = document.getElementById("out");
+    var derr = document.getElementById("err");
+    var unp = document.getElementById("unp");
+    var unpout = document.getElementById("unpout");
+    din.addEventListener("input", () => {
+      var parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar()));
+      try {
+        dout.innerText = parser.feed(din.value).results;
+      }catch(e) {
+        dout.innerText = e;
+      }
+    });
+    
+    class unParse {
+      constructor() {
+        this.out = "";
+      }
+      unparseInstr(p, indent = "") {
+        var unp = unInstr(p);
+        var pair = unpair(unp[1]);
+        if(unp[0] == 0n){
+          var pair2 = unpair(pair[1]);
+          return indent + `<span>x<sub>${pair[0]}</sub> ≔ x<sub>${pair2[0]}</sub> + x<sub>${pair2[1]}</sub></span>`;
+        }else if(unp[0] == 1n){
+          var pair2 = unpair(pair[1]);
+          return indent + `<span>x<sub>${pair[0]}</sub> ≔ x<sub>${pair2[0]}</sub> - x<sub>${pair2[1]}</sub></span>`;
+        }else if(unp[0] == 2n){
+          //x1 = 5; <x1, 5>
+          return indent + `<span>x<sub>${pair[0]}</sub> ≔ ${pair[1]}</span>`;
+        }else if(unp[0] == 3n){
+          var ret = `<b>while</b> <span>x<sub>${pair[0]}</sub> ≠ 0</span> <b>do</b>\n`;
+          ret += this.unparseInstr(pair[1], indent + "  ");
+          return ret + "\n<b>od</b>";
+        }else if(unp[0] == 4n){
+          var ret = this.unparseInstr(pair[0], indent) + "\n";
+          ret += this.unparseInstr(pair[1], indent);
+          return ret;
+        }
+      }
+    }
+    unp.addEventListener("input", () => {
+      var unparser = new unParse();
+      unpout.innerHTML = unparser.unparseInstr(BigInt(unp.value))
+    });
+    function unInstr(p) {
+      var rest = p % 5n;
+      var val = (p - rest) / 5n;
+      return [rest, val];
+    }
+    function pair(x, y) {
+      return ((x + y) * (x + y + 1n))/2n + y;
+    }
+    function unpairNaive(p) {
+      var z = sqrt(p);
+      while (((z * (z + 1n)) / 2n) <= p) {
+        z += 1n;
+        //if(((z * (z + 1n)) / 2n) > p)
+      }
+      z -= 1n;
+      var x2 = p - ((z * (z + 1n)) / 2n);
+      var x1 = z - x2;
+      return [x1, x2];
+    }
+    function unpair(p) {
+      var w = (sqrt(8n * p + 1n) - 1n) / 2n;
+      var t = (w * w + w) / 2n;
+      var x2 = p - t;
+      var x1 = w - x2;
+      
+      return [x1, x2];
+    }
+    function sqrt(value) {
+      if (value < 0n) {
+          throw 'square root of negative numbers is not supported'
+      }
+
+      if (value < 2n) {
+          return value;
+      }
+
+      function newtonIteration(n, x0) {
+        const x1 = ((n / x0) + x0) >> 1n;
+        if (x0 === x1 || x0 === (x1 - 1n)) {
+            return x0;
+        }
+        return newtonIteration(n, x1);
+      }
+      return newtonIteration(value, 1n);
+    }
+  </script>
+</body>
+</html>
