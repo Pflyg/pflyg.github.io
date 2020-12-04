@@ -106,12 +106,12 @@
           //x1 = 5; <x1, 5>
           return indent + `<span>x<sub>${pair[0]}</sub> ≔ ${pair[1]}</span>`;
         }else if(unp[0] == 3n){
-          var ret = `<b>while</b> <span>x<sub>${pair[0]}</sub> ≠ 0</span> <b>do</b>\n`;
+          var ret = indent + `<b>while</b> <span>x<sub>${pair[0]}</sub> ≠ 0</span> <b>do</b>\n`;
           ret += this.unparseInstr(pair[1], indent + "  ");
-          return ret + "\n<b>od</b>";
+          return indent + ret + "\n<b>od</b>";
         }else if(unp[0] == 4n){
-          var ret = this.unparseInstr(pair[0], indent) + "\n";
-          ret += this.unparseInstr(pair[1], indent);
+          var ret = indent + this.unparseInstr(pair[0], indent) + "\n";
+          ret += indent + this.unparseInstr(pair[1], indent);
           return ret;
         }
       }
