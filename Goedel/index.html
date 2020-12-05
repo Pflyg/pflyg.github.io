@@ -78,6 +78,7 @@ h1 {
     <div class="G">
       <h3>Gödelnummer (Input)</h3>
       <textarea id ="unp"></textarea>
+      <button style="margin-top: 0.5em;" id="randNum">Zufällige Gödelnummer</button>
     </div>
     <div class="OG">
       <h3>WHILE-Programm (Output)</h3>
@@ -101,7 +102,23 @@ h1 {
         dout.innerText = e;
       }
     });
-    
+    document.getElementById("randNum").addEventListener("click", () => {
+      unp.value = randBigInt();
+      var unparser = new unParse();
+      unpout.innerHTML = unparser.unparseInstr(BigInt(unp.value))
+    })
+    function randBigInt() {
+      var bytes = Math.floor(Math.random() * 250);
+      var ar = crypto.getRandomValues(new Uint8Array(bytes));
+      var hex = [];
+      ar.forEach(function (i) {
+        var h = i.toString(16);
+        if (h.length % 2) { h = '0' + h; }
+        hex.push(h);
+      });
+
+      return BigInt('0x' + hex.join(''));
+    }
     class unParse {
       constructor() {
         this.out = "";
