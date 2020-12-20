@@ -9,6 +9,7 @@ function SVGLib(ref) {
   SVGLibMatrix(ref);
   var GC = new GCodeGenerator(ref);
   var draw;
+  var scriptContainer = document.getElementById("dynamic-scripts");
   var adapter;
   var elId = "svgg";
   var styling = {
@@ -32,7 +33,13 @@ function SVGLib(ref) {
     pol = pol.intersect(poly);
     return pol;
   }
-
+  ref.use = function(src) {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = src; 
+    scriptContainer.appendChild(script);
+    return false;
+  }
   ref.createCanvas = function(w, h) {
     dimensions = [w, h];
     ref.resetMatrix();
@@ -53,6 +60,7 @@ function SVGLib(ref) {
   ref.clear = function() {
     ref.resetMatrix();
     GC.clear();
+    scriptContainer.innerText = "";
     GC.setCanvas(dimensions[0], dimensions[1]);
     adapter.clear();
   }

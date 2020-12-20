@@ -89,6 +89,8 @@ Similarly, if a function takes a polygon as an argument, you can either pass in 
     strokeWeight(1);
     center();
   ```
+ - `use (src)`
+   - Loads a script tag into global scope with src `src`
  - `createCanvas (width, height)`
    - Initialises the canvas and sets its dimension
  - `center ()`
