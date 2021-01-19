@@ -10,6 +10,8 @@ EXPR -> ADD {% id %}
 | CON2 {% id %}
 | IF {% id %}
 
+ASSIGN -> ":=" | "≔"
+
 VAR -> [a-z] VARC {%
 	d => (BigInt(val(d[0] + d[1])))
 %}
@@ -18,18 +20,18 @@ VARC -> [\w]:* {% d => d[0].join("")%}
 _ -> [\s]:* {% function(d) {} %}
 
 NUM -> [0-9]:+ {% (d) => (BigInt(d[0].join(""))) %}
-ADD -> VAR _ ":=" _ VAR _ "+" _ VAR {% d => addSub(0n, d)%}
-ADD2 -> VAR _ ":=" _ VAR _ "+" _ NUM {% d => {
+ADD -> VAR _ ASSIGN _ VAR _ "+" _ VAR {% d => addSub(0n, d)%}
+ADD2 -> VAR _ ASSIGN _ VAR _ "+" _ NUM {% d => {
 	var vl = BigInt(newval());
 	return konkat(con(vl, d[8]), instr(0n, pair(d[0], pair(d[4], vl))))
 }%}
-SUB -> VAR _ ":=" _ VAR _ "-" _ VAR {% d => addSub(1n, d)%}
-SUB2 -> VAR _ ":=" _ VAR _ "-" _ NUM {% d => {
+SUB -> VAR _ ASSIGN _ VAR _ "-" _ VAR {% d => addSub(1n, d)%}
+SUB2 -> VAR _ ASSIGN _ VAR _ "-" _ NUM {% d => {
 	var vl = BigInt(newval());
 	return konkat(con(vl, d[8]), instr(1n, pair(d[0], pair(d[4], vl))))
 }%}
-CON -> VAR _ ":=" _ NUM {% d => (con(d[0], d[4]))%}
-CON2 -> VAR _ ":=" _ VAR {% d => (con2(d[0], d[4]))%}
+CON -> VAR _ ASSIGN _ NUM {% d => (con(d[0], d[4]))%}
+CON2 -> VAR _ ASSIGN _ VAR {% d => (con2(d[0], d[4]))%}
 WHL -> "while"i _ VAR _ "do"i _ BEXPR _ "od"i {%
 	d => whl(d[2], d[6])
 %}

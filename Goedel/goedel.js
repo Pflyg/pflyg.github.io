@@ -86,6 +86,9 @@ var grammar = {
     {"name": "EXPR", "symbols": ["SUB2"], "postprocess": id},
     {"name": "EXPR", "symbols": ["CON2"], "postprocess": id},
     {"name": "EXPR", "symbols": ["IF"], "postprocess": id},
+    {"name": "ASSIGN$string$1", "symbols": [{"literal":":"}, {"literal":"="}], "postprocess": function joiner(d) {return d.join('');}},
+    {"name": "ASSIGN", "symbols": ["ASSIGN$string$1"]},
+    {"name": "ASSIGN", "symbols": [{"literal":"≔"}]},
     {"name": "VAR", "symbols": [/[a-z]/, "VARC"], "postprocess": 
         d => (BigInt(val(d[0] + d[1])))
         },
@@ -98,24 +101,18 @@ var grammar = {
     {"name": "NUM$ebnf$1", "symbols": [/[0-9]/]},
     {"name": "NUM$ebnf$1", "symbols": ["NUM$ebnf$1", /[0-9]/], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "NUM", "symbols": ["NUM$ebnf$1"], "postprocess": (d) => (BigInt(d[0].join("")))},
-    {"name": "ADD$string$1", "symbols": [{"literal":":"}, {"literal":"="}], "postprocess": function joiner(d) {return d.join('');}},
-    {"name": "ADD", "symbols": ["VAR", "_", "ADD$string$1", "_", "VAR", "_", {"literal":"+"}, "_", "VAR"], "postprocess": d => addSub(0n, d)},
-    {"name": "ADD2$string$1", "symbols": [{"literal":":"}, {"literal":"="}], "postprocess": function joiner(d) {return d.join('');}},
-    {"name": "ADD2", "symbols": ["VAR", "_", "ADD2$string$1", "_", "VAR", "_", {"literal":"+"}, "_", "NUM"], "postprocess":  d => {
+    {"name": "ADD", "symbols": ["VAR", "_", "ASSIGN", "_", "VAR", "_", {"literal":"+"}, "_", "VAR"], "postprocess": d => addSub(0n, d)},
+    {"name": "ADD2", "symbols": ["VAR", "_", "ASSIGN", "_", "VAR", "_", {"literal":"+"}, "_", "NUM"], "postprocess":  d => {
         	var vl = BigInt(newval());
         	return konkat(con(vl, d[8]), instr(0n, pair(d[0], pair(d[4], vl))))
         }},
-    {"name": "SUB$string$1", "symbols": [{"literal":":"}, {"literal":"="}], "postprocess": function joiner(d) {return d.join('');}},
-    {"name": "SUB", "symbols": ["VAR", "_", "SUB$string$1", "_", "VAR", "_", {"literal":"-"}, "_", "VAR"], "postprocess": d => addSub(1n, d)},
-    {"name": "SUB2$string$1", "symbols": [{"literal":":"}, {"literal":"="}], "postprocess": function joiner(d) {return d.join('');}},
-    {"name": "SUB2", "symbols": ["VAR", "_", "SUB2$string$1", "_", "VAR", "_", {"literal":"-"}, "_", "NUM"], "postprocess":  d => {
+    {"name": "SUB", "symbols": ["VAR", "_", "ASSIGN", "_", "VAR", "_", {"literal":"-"}, "_", "VAR"], "postprocess": d => addSub(1n, d)},
+    {"name": "SUB2", "symbols": ["VAR", "_", "ASSIGN", "_", "VAR", "_", {"literal":"-"}, "_", "NUM"], "postprocess":  d => {
         	var vl = BigInt(newval());
         	return konkat(con(vl, d[8]), instr(1n, pair(d[0], pair(d[4], vl))))
         }},
-    {"name": "CON$string$1", "symbols": [{"literal":":"}, {"literal":"="}], "postprocess": function joiner(d) {return d.join('');}},
-    {"name": "CON", "symbols": ["VAR", "_", "CON$string$1", "_", "NUM"], "postprocess": d => (con(d[0], d[4]))},
-    {"name": "CON2$string$1", "symbols": [{"literal":":"}, {"literal":"="}], "postprocess": function joiner(d) {return d.join('');}},
-    {"name": "CON2", "symbols": ["VAR", "_", "CON2$string$1", "_", "VAR"], "postprocess": d => (con2(d[0], d[4]))},
+    {"name": "CON", "symbols": ["VAR", "_", "ASSIGN", "_", "NUM"], "postprocess": d => (con(d[0], d[4]))},
+    {"name": "CON2", "symbols": ["VAR", "_", "ASSIGN", "_", "VAR"], "postprocess": d => (con2(d[0], d[4]))},
     {"name": "WHL$subexpression$1", "symbols": [/[wW]/, /[hH]/, /[iI]/, /[lL]/, /[eE]/], "postprocess": function(d) {return d.join(""); }},
     {"name": "WHL$subexpression$2", "symbols": [/[dD]/, /[oO]/], "postprocess": function(d) {return d.join(""); }},
     {"name": "WHL$subexpression$3", "symbols": [/[oO]/, /[dD]/], "postprocess": function(d) {return d.join(""); }},
@@ -135,5 +132,5 @@ var grammar = {
 ]
   , ParserStart: "OUT"
 }
-return grammar;
+return grammar
 });
