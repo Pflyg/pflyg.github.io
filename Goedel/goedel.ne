@@ -15,6 +15,13 @@ ASSIGN -> ":=" | "≔"
 VAR -> [a-z] VARC {%
 	d => (BigInt(val(d[0] + d[1])))
 %}
+
+VARNOTNULL -> VAR {% id %}
+| VAR _ "≠" _ "0" {% d => d[0] %}
+| VAR _ "=!" _ "0" {% d => d[0] %}
+| VAR _ "!=" _ "0" {% d => d[0] %}
+| VAR _ "<>" _ "0" {% d => d[0] %}
+
 VARC -> [\w]:* {% d => d[0].join("")%}
 
 _ -> [\s]:* {% function(d) {} %}
@@ -32,13 +39,13 @@ SUB2 -> VAR _ ASSIGN _ VAR _ "-" _ NUM {% d => {
 }%}
 CON -> VAR _ ASSIGN _ NUM {% d => (con(d[0], d[4]))%}
 CON2 -> VAR _ ASSIGN _ VAR {% d => (con2(d[0], d[4]))%}
-WHL -> "while"i _ VAR _ "do"i _ BEXPR _ "od"i {%
+WHL -> "while"i _ VARNOTNULL _ "do"i _ BEXPR _ "od"i {%
 	d => whl(d[2], d[6])
 %}
 KK -> EXPR _ BEXPR {%
   d => {return konkat(d[0], d[2])}
 %}
-IF -> "if"i _ VAR _ "then"i _ BEXPR _ "else"i _ BEXPR _ "fi"i {%
+IF -> "if"i _ VARNOTNULL _ "then"i _ BEXPR _ "else"i _ BEXPR _ "fi"i {%
  d => ifelse(d[2], d[6], d[10])
 %}
 

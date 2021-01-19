@@ -92,6 +92,14 @@ var grammar = {
     {"name": "VAR", "symbols": [/[a-z]/, "VARC"], "postprocess": 
         d => (BigInt(val(d[0] + d[1])))
         },
+    {"name": "VARNOTNULL", "symbols": ["VAR"], "postprocess": id},
+    {"name": "VARNOTNULL", "symbols": ["VAR", "_", {"literal":"≠"}, "_", {"literal":"0"}], "postprocess": d => d[0]},
+    {"name": "VARNOTNULL$string$1", "symbols": [{"literal":"="}, {"literal":"!"}], "postprocess": function joiner(d) {return d.join('');}},
+    {"name": "VARNOTNULL", "symbols": ["VAR", "_", "VARNOTNULL$string$1", "_", {"literal":"0"}], "postprocess": d => d[0]},
+    {"name": "VARNOTNULL$string$2", "symbols": [{"literal":"!"}, {"literal":"="}], "postprocess": function joiner(d) {return d.join('');}},
+    {"name": "VARNOTNULL", "symbols": ["VAR", "_", "VARNOTNULL$string$2", "_", {"literal":"0"}], "postprocess": d => d[0]},
+    {"name": "VARNOTNULL$string$3", "symbols": [{"literal":"<"}, {"literal":">"}], "postprocess": function joiner(d) {return d.join('');}},
+    {"name": "VARNOTNULL", "symbols": ["VAR", "_", "VARNOTNULL$string$3", "_", {"literal":"0"}], "postprocess": d => d[0]},
     {"name": "VARC$ebnf$1", "symbols": []},
     {"name": "VARC$ebnf$1", "symbols": ["VARC$ebnf$1", /[\w]/], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "VARC", "symbols": ["VARC$ebnf$1"], "postprocess": d => d[0].join("")},
@@ -116,7 +124,7 @@ var grammar = {
     {"name": "WHL$subexpression$1", "symbols": [/[wW]/, /[hH]/, /[iI]/, /[lL]/, /[eE]/], "postprocess": function(d) {return d.join(""); }},
     {"name": "WHL$subexpression$2", "symbols": [/[dD]/, /[oO]/], "postprocess": function(d) {return d.join(""); }},
     {"name": "WHL$subexpression$3", "symbols": [/[oO]/, /[dD]/], "postprocess": function(d) {return d.join(""); }},
-    {"name": "WHL", "symbols": ["WHL$subexpression$1", "_", "VAR", "_", "WHL$subexpression$2", "_", "BEXPR", "_", "WHL$subexpression$3"], "postprocess": 
+    {"name": "WHL", "symbols": ["WHL$subexpression$1", "_", "VARNOTNULL", "_", "WHL$subexpression$2", "_", "BEXPR", "_", "WHL$subexpression$3"], "postprocess": 
         d => whl(d[2], d[6])
         },
     {"name": "KK", "symbols": ["EXPR", "_", "BEXPR"], "postprocess": 
@@ -126,11 +134,11 @@ var grammar = {
     {"name": "IF$subexpression$2", "symbols": [/[tT]/, /[hH]/, /[eE]/, /[nN]/], "postprocess": function(d) {return d.join(""); }},
     {"name": "IF$subexpression$3", "symbols": [/[eE]/, /[lL]/, /[sS]/, /[eE]/], "postprocess": function(d) {return d.join(""); }},
     {"name": "IF$subexpression$4", "symbols": [/[fF]/, /[iI]/], "postprocess": function(d) {return d.join(""); }},
-    {"name": "IF", "symbols": ["IF$subexpression$1", "_", "VAR", "_", "IF$subexpression$2", "_", "BEXPR", "_", "IF$subexpression$3", "_", "BEXPR", "_", "IF$subexpression$4"], "postprocess": 
+    {"name": "IF", "symbols": ["IF$subexpression$1", "_", "VARNOTNULL", "_", "IF$subexpression$2", "_", "BEXPR", "_", "IF$subexpression$3", "_", "BEXPR", "_", "IF$subexpression$4"], "postprocess": 
         d => ifelse(d[2], d[6], d[10])
         }
 ]
   , ParserStart: "OUT"
 }
-return grammar
+return grammar;
 });
