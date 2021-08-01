@@ -87,6 +87,14 @@ class Line {
     this.p1 = p1;
     this.p2 = p2;
   }
+  get midpoint() {
+    return this.p2.clone().sub(this.p1).mult(0.5).add(this.p1);
+  }
+  rotate(angle) {
+    var mid = this.midpoint;
+    this.p1 = this.p1.rotate(angle, mid);
+    this.p2 = this.p2.rotate(angle, mid);
+  }
   len() {
     return Math.sqrt(this.len2());
   }
