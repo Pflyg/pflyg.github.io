@@ -193,8 +193,8 @@ function SVGLib(ref) {
     if(!poly)return;
     //Multiple separate polygons to draw
     if(poly.length){
-      for(let poly of poly){
-        let points = poly.points;//.map(p => ref.applyTF(p));
+      for(let pol of poly){
+        let points = pol.points;//.map(p => ref.applyTF(p));
         GC.polygon(points);
         adapter.polygon(points, styling);
         /*var poly = draw.polygon(points.map(p => p.toArray()));
