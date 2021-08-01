@@ -24,7 +24,7 @@ Most of the methods listed here are chainable
    - Subtracts the coordinates of Point b from the current Point (like vector subtraction)
  - `mult (factor)`
    - Multiplies the coordinates of the current Point by `factor`
- - `rotate (angle [degrees])`
+ - `rotate (angle [degrees], origin = P(0, 0))`
    - Rotates the current Point by `angle` around origin (like vector rotation)
  - `normalise ()`
    - Divides the current Point by it's length (vector normalisation)

@@ -1,4 +1,4 @@
-import {rayCast, intersectLine} from './utils.js';
+import {rayCast, intersectLine, normaliseArguments} from './utils.js';
 //import Flatten from "https://unpkg.com/@flatten-js/core@1.2.8/dist/main.esm.js";
 
 //var BooleanOperations = Flatten.BooleanOperations;
@@ -33,12 +33,19 @@ class Point {
   toArray() {
     return [this.x, this.y];
   }
-  rotate(angle) {
-    angle = angle * Math.PI / 180;
-    var x = this.x * Math.cos(angle) - this.y * Math.sin(angle);
-    var y = this.x * Math.sin(angle) + this.y * Math.cos(angle);
-    this.x = x;
-    this.y = y;
+  rotate(angle, point) {
+    if(arguments.length == 1){
+      angle = angle * Math.PI / 180;
+      var x = this.x * Math.cos(angle) - this.y * Math.sin(angle);
+      var y = this.x * Math.sin(angle) + this.y * Math.cos(angle);
+      this.x = x;
+      this.y = y;
+    }else{
+      var ret = this.clone().sub(point);
+      ret.rotate(angle);
+      this.x = point.x + ret.x;
+      this.y = point.y + ret.y;
+    }
     return this;
   }
   mult(s){

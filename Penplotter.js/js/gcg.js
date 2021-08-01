@@ -1,5 +1,6 @@
 
 import {Point, Polygon, Line} from './classes.js';
+import { normaliseArguments } from './utils.js';
 import SVGAdapter from './SVGAdapter.js';
 import GCodeGenerator from './GCGen.js';
 
@@ -322,41 +323,6 @@ function commonFunctions(ref) {
 SVGLib(ref);
 commonFunctions(ref);
 
-function normaliseArguments(args, pattern){
-  var ret = {};
-  var i = 0;
-  for(let key in pattern){
-    let pat = pattern[key];
-    if(args[i] === undefined && pat.default !== undefined){
-      i++;
-      ret[key] = pat.default;
-      continue;
-    }
-    if(pat.type === "point"){
-      if(args[i].x !== undefined){
-        ret[key] = args[i];
-        i++;
-      }else if(Array.isArray(args[i])){
-        ret[key] = new Point(args[i][0], args[i][1]);
-        i++;
-      }else{
-        ret[key] = new Point(args[i], args[i + 1]);
-        i+=2;
-      }
-    }else if(pat.type === "polygon"){
-      if(Array.isArray(args[i])){
-        ret[key] = new Polygon(args[i]);
-      }else{//if(args[i].points !== undefined){
-        ret[key] = args[i];
-        i++;
-      }
-    }else{
-      ret[key] = args[i];
-      i++;
-    }
-  }
-  return ret;
-}
 
 ref.Point = Point;
 ref.P = (x, y) => new Point(x, y);
