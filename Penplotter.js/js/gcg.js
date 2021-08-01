@@ -191,11 +191,22 @@ function SVGLib(ref) {
     var poly = newClipPoly(new Polygon(args.poly.points.map(p => ref.applyTF(p))));
     
     if(!poly)return;
-    var points = poly.points;//.map(p => ref.applyTF(p));
-    GC.polygon(points);
-    adapter.polygon(points, styling);
-    /*var poly = draw.polygon(points.map(p => p.toArray()));
-    applyStyling(poly);*/
+    //Multiple separate polygons to draw
+    if(poly.length){
+      for(let poly of poly){
+        let points = poly.points;//.map(p => ref.applyTF(p));
+        GC.polygon(points);
+        adapter.polygon(points, styling);
+        /*var poly = draw.polygon(points.map(p => p.toArray()));
+        applyStyling(poly);*/
+      }
+    }else {
+      let points = poly.points;//.map(p => ref.applyTF(p));
+      GC.polygon(points);
+      adapter.polygon(points, styling);
+      /*var poly = draw.polygon(points.map(p => p.toArray()));
+      applyStyling(poly);*/
+    }
   }
   ref.hatchPolygon = function () {
     var args = normaliseArguments(arguments, 
